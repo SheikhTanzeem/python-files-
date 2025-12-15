@@ -35,6 +35,3 @@ def get_employee():
         
 c=get_employee()
 print(c)
-
-
-print("hello")

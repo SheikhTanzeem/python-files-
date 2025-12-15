@@ -31,6 +31,3 @@
 # print(a)
 
 print("hello world")
-
-print("hello world")
-print("hello world")
