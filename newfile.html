@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Employee Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px #e3e8ee;
+      padding: 18px 12px 12px 12px;
+    }
+    h2 {
+      margin: 0 0 14px 0;
+      font-size: 1.2rem;
+      color: #2d3748;
+      text-align: center;
+      font-weight: 700;
+    }
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      justify-content: center;
+    }
+    .filter-row input[type="date"],
+    .filter-row input[type="time"] {
+      padding: 4px 6px;
+      border-radius: 3px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
+      background: #f7fafc;
+      color: #2d3748;
+      width: 45%;
+    }
+    .filter-row button {
+      padding: 5px 10px;
+      border-radius: 3px;
+      border: none;
+      background: #3182ce;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+    .filter-row button:last-child {
+      background: #38a169;
+    }
+    .filter-row button:hover {
+      opacity: 0.9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 0.93rem;
+    }
+    th, td {
+      padding: 6px 2px;
+      text-align: center;
+      border-bottom: 1px solid #e3e8ee;
+    }
+    th {
+      background: #f4f6fa;
+      color: #3182ce;
+      font-weight: 700;
+    }
+    .no-data {
+      color: #e53e3e;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+    .sign {
+      margin-top: 10px;
+      font-size: 0.93rem;
+      color: #3182ce;
+      text-align: right;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Employee Data</h2>
+    <form class="filter-row" id="filter-form" onsubmit="event.preventDefault(); fetchData();">
+      <input type="date" id="date-input" name="date" />
+      <input type="time" id="time-input" name="time" step="1"/>
+      <button type="submit">Fetch</button>
+      <button type="button" onclick="syncData()">Sync</button>
+    </form>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Price</th>
+          <th>Product</th>
+          <th>Created_at</th>
+        </tr>
+      </thead>
+      <tbody id="data-table">
+        <tr><td class="no-data" colspan="4">No data loaded</td></tr>
+      </tbody>
+    </table>
+    <div class="sign">
+      Tanzeem Sheikh
+    </div>
+  </div>
+  <script>
+    async function fetchData() {
+      const date = document.getElementById('date-input').value;
+      const time = document.getElementById('time-input').value;
+      let url = "http://127.0.0.1:8000/get_employee";
+      const params = [];
+      if (date) params.push(`date=${date}`);
+      if (time) params.push(`time=${time}`);
+      if (params.length) url += "?" + params.join("&");
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Failed to fetch data");
+        const json = await res.json();
+
+        const table = document.getElementById("data-table");
+        table.innerHTML = "";
+
+        if (!json.data || json.data.length === 0) {
+          table.innerHTML = "<tr><td class='no-data' colspan='4'>No data found</td></tr>";
+          return;
+        }
+
+        json.data.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.id}</td>
+            <td>₹${row.price}</td>
+            <td>${row.product_name}</td>
+            <td>${row.created_at}</td>
+          `;
+          table.appendChild(tr);
+        });
+      } catch (err) {
+        alert("Error fetching data: " + err.message);
+      }
+    }
+
+    async function syncData() {
+      const date = document.getElementById('date-input').value;
+      const time = document.getElementById('time-input').value;
+      let url = "http://127.0.0.1:8000/sync_data";
+      const params = [];
+      if (date) params.push(`date=${date}`);
+      if (time) params.push(`time=${time}`);
+      if (params.length) url += "?" + params.join("&");
+
+      try {
+        const res = await fetch(url, { method: "POST" });
+        const data = await res.json();
+        alert(data.message);
+        fetchData();
+      } catch (err) {
+        alert("Error syncing data: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

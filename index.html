@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AAO FREE KA DATA LE JAO GUYS!!! "BY TANZEEM SHEIKH"</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #232526, #414345);
+      color: #fff;
+      margin: 0; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      background: rgba(44, 62, 80, 0.95);
+      margin-top: 50px;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      padding: 40px 32px 32px 32px;
+      width: 95%;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      font-size: 2.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      color: #6bbcff;
+      text-shadow: 0 2px 8px #0003;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #ffb86b;
+      margin-bottom: 28px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(90deg, #6bbcff 60%, #ff6b6b 100%);
+      color: #fff;
+      border: none;
+      padding: 13px 28px;
+      border-radius: 10px;
+      font-size: 1.08rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .action-btn:hover {
+      background: linear-gradient(90deg, #ff6b6b 60%, #6bbcff 100%);
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    .action-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      background: #23243a;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 16px #0002;
+    }
+
+    th, td {
+      padding: 13px 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #2d2f4a;
+      color: #6bbcff;
+      font-size: 1.04rem;
+      font-weight: 600;
+      border-bottom: 2px solid #6bbcff44;
+    }
+
+    td {
+      background: #23243a;
+      color: #e3e3e3;
+      font-size: 1rem;
+    }
+
+    tr:nth-child(even) td {
+      background: #28294a;
+    }
+
+    tr:hover td {
+      background: #3a3b6a;
+      transition: 0.2s;
+    }
+
+    .no-data {
+      color: #ff6b6b;
+      font-weight: 500;
+      font-size: 1.08rem;
+      padding: 20px 0;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 15px;
+      opacity: 0.7;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>AAO FREE KA DATA LE JAO GUYS!!!</h2>
+    <div class="subtitle">BY TANZEEM SHEIKH</div>
+    <div class="button-row">
+      <button class="action-btn" onclick="fetchData()">
+        <svg viewBox="0 0 24 24"><path d="M3 12l18-12v24z"/></svg>
+        Fetch Data
+      </button>
+      <button class="action-btn" onclick="syncData()">
+        <svg viewBox="0 0 24 24"><path d="M12 2v2a8 8 0 1 1-8 8H2a10 10 0 1 0 10-10z"/></svg>
+        Load Data
+      </button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Price</th>
+          <th>Product Name</th>
+          <th>Created_at</th>
+        </tr>
+      </thead>
+      <tbody id="data-table">
+        <tr><td class="no-data" colspan="4">No data loaded yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <footer>Powered by FastAPI 💻 | Designed by Tanzeem Sheikh</footer>
+  <footer>HAVE A NICE DAY</footer>
+
+  <script>
+    async function fetchData() {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/get_employee");
+        if (!res.ok) throw new Error("Failed to fetch data");
+        const json = await res.json();
+
+        const table = document.getElementById("data-table");
+        table.innerHTML = "";
+
+        if (!json.data || json.data.length === 0) {
+          table.innerHTML = "<tr><td colspan='4'>No data found</td></tr>";
+          return;
+        }
+
+        json.data.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.id}</td>
+            <td>${row.price}</td>
+            <td>${row.product_name}</td>
+            <td>${row.created_at}</td>
+          `;
+          table.appendChild(tr);
+        });
+      } catch (err) {
+        alert("Error fetching data: " + err.message);
+      }
+    }
+
+    async function syncData() {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/sync_data", { method: "POST" });
+        const data = await res.json();
+        alert(data.message);
+        fetchData();
+      } catch (err) {
+        alert("Error syncing data: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
