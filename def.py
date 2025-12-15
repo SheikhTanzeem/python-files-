@@ -18,4 +18,3 @@
 # fullname()
 
 
-print("hello world")
