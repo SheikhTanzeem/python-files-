@@ -37,6 +37,5 @@ c=get_employee()
 print(c)
 
 
-print("hello")
 
 print("tanzeem sheikh")
